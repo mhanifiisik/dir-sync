@@ -1,18 +1,24 @@
 ```mermaid
 flowchart TD
-A[Start Sync] --> B{Check Source Dir}
-B -->|Exists| C{Check Replica Dir}
-B -->|Not Found| E[Log Error]
-C -->|Exists| D[Start File Sync]
-C -->|Not Found| F[Create Directory]
-F --> D
-D --> G{Process Files}
-G -->|Success| H[Log Success]
-G -->|Error| I[Log Error]
-I --> J{Continue?}
-J -->|Yes| D
-J -->|No| K[Exit]
-H --> L{Wait Interval}
-L -->|Continue| D
-L -->|Interrupt| K
+    A[Start Program] --> B{Check Source Dir}
+    B -->|Not Found| C[Log Error & Exit]
+    B -->|Exists| D{Check Replica Dir}
+    D -->|Not Found| E[Create Replica Dir]
+    D -->|Exists| F[Start Sync Loop]
+    E --> F
+    F --> G[Get File Lists]
+    G --> H{Process Deletions}
+    H -->|For each extra file| I[Remove from Replica]
+    H --> J{Process Updates}
+    J -->|For each source file| K{Compare SHA-256}
+    K -->|Different/Missing| L[Copy/Update File]
+    K -->|Same| M[Skip File]
+    L --> N[Log Operation]
+    M --> N
+    N --> O{More Files?}
+    O -->|Yes| J
+    O -->|No| P[Log Completion]
+    P --> Q[Wait Interval]
+    Q --> F
+    Q -->|Interrupt| R[Log Stop & Exit]
 ```
