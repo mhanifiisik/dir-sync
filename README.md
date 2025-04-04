@@ -21,6 +21,12 @@ pip install -r requirements.txt
 python main.py <source_directory> <replica_directory> <interval>
 ```
 
+Example:
+
+```bash
+python main.py test_source test_replica 60
+```
+
 ## Testing
 
 ```bash
@@ -29,4 +35,4 @@ pytest tests/test_main.py
 
 ## Logging
 
-Logs are saved to `logs/dir_sync.log`
+Logs are saved to `sync.log`
